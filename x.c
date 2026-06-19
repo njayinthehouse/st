@@ -323,6 +323,34 @@ zoomreset(const Arg *arg)
 }
 
 void
+xsetfont(char *fontstr)
+{
+	FcPattern *test;
+	char *dup;
+
+	if (fontstr == NULL || *fontstr == '\0')
+		return;
+
+	/* Validate the name parses before tearing down the live fonts, so a
+	 * malformed OSC 50 can't die() and take the whole session down. */
+	test = (fontstr[0] == '-') ? XftXlfdParse(fontstr, False, False)
+	                           : FcNameParse((const FcChar8 *)fontstr);
+	if (test == NULL)
+		return;
+	FcPatternDestroy(test);
+
+	if ((dup = strdup(fontstr)) == NULL)
+		return;
+	usedfont = dup;
+
+	xunloadfonts();
+	xloadfonts(usedfont, 0);
+	cresize(0, 0);
+	redraw();
+	xhints();
+}
+
+void
 ttysend(const Arg *arg)
 {
 	ttywrite(arg->s, strlen(arg->s), 1);

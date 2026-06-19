@@ -1916,6 +1916,10 @@ strhandle(void)
 			if (narg > 1)
 				xsettitle(strescseq.args[1]);
 			return;
+		case 50: /* set font (OSC 50 ; <fontconfig name>) */
+			if (narg > 1)
+				xsetfont(strescseq.args[1]);
+			return;
 		case 52: /* manipulate selection data */
 			if (narg > 2 && allowwindowops) {
 				dec = base64dec(strescseq.args[2]);
