@@ -344,7 +344,9 @@ xsetfont(char *fontstr)
 	usedfont = dup;
 
 	xunloadfonts();
-	xloadfonts(usedfont, 0);
+	/* Preserve the current (possibly zoomed) size across an OSC 50 font change:
+	 * sweettalker sends only a family, and the user owns size via Ctrl+=/Ctrl+-. */
+	xloadfonts(usedfont, usedfontsize);
 	cresize(0, 0);
 	redraw();
 	xhints();
